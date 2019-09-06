@@ -1,45 +1,79 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using CasaDoCodigo.Areas.Carrinho.Data;
+using CasaDoCodigo.Areas.Catalogo.Data.Repositories;
+using CasaDoCodigo.Areas.Identity.Data;
 using CasaDoCodigo.Models;
-using CasaDoCodigo.Models.ViewModels;
-using CasaDoCodigo.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using MVC.Areas.Carrinho.Model;
 
 namespace CasaDoCodigo.Areas.Carrinho.Controllers
 {
-    [Area("Carrinho")]
+    [Area("Carrinho")]  
     public class HomeController : Controller
     {
-        private readonly IPedidoRepository pedidoRepository;
+        private readonly ICarrinhoRepository carrinhoRepository;
+        private readonly IProdutoRepository produtoRepository;
+        private readonly UserManager<AppIdentityUser> userManager;
 
-        public HomeController(IPedidoRepository pedidoRepository)
+        public HomeController(ICarrinhoRepository carrinhoRepository,
+            IProdutoRepository produtoRepository,
+            UserManager<AppIdentityUser> userManager)
         {
-            this.pedidoRepository = pedidoRepository;
+            this.carrinhoRepository = carrinhoRepository;
+            this.produtoRepository = produtoRepository;
+            this.userManager = userManager;
         }
 
         [Authorize]
         public async Task<IActionResult> Index(string codigo)
         {
-            if (!string.IsNullOrEmpty(codigo))
-            {
-                await pedidoRepository.AddItemAsync(codigo);
-            }
+            string clienteId = userManager.GetUserId(this.User);
 
-            var pedido = await pedidoRepository.GetPedidoAsync();
-            List<ItemPedido> itens = pedido.Itens;
-            CarrinhoViewModel carrinhoViewModel = new CarrinhoViewModel(itens);
-            return base.View(carrinhoViewModel);
+            CarrinhoCliente carrinhoCliente;
+            if (!string.IsNullOrWhiteSpace(codigo))
+            {
+                var product = await produtoRepository.GetProdutoAsync(codigo);
+                if (product == null)
+                {
+                    return RedirectToAction("ProdutoNaoEncontrado", "Carrinho", codigo);
+                }
+
+                var item = new ItemCarrinho(product.Codigo, product.Codigo, product.Nome, product.Preco, 1);
+                carrinhoCliente = await carrinhoRepository.AddItemCarrinhoAsync(clienteId, item);
+            }
+            else
+            {
+                carrinhoCliente = await carrinhoRepository.GetCarrinhoAsync(clienteId);
+            }
+            return base.View(carrinhoCliente);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<UpdateQuantidadeResponse> UpdateQuantidade([FromBody]ItemPedido itemPedido)
+        public async Task<ActionResult<UpdateQuantidadeResponse>> UpdateQuantidade([FromBody]UpdateQuantidadeInput input)
         {
-            return await pedidoRepository.UpdateQuantidadeAsync(itemPedido);
+            //return await carrinhoRepository.UpdateQuantidadeAsync(itemPedido);
+
+            string clienteId = userManager.GetUserId(this.User);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var output = await carrinhoRepository.UpdateItemCarrinhoAsync(clienteId, input);
+                return Ok(output);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(clienteId);
+            }
         }
     }
 }
