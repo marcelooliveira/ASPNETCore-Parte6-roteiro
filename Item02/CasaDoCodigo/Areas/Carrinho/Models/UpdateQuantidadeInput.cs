@@ -9,14 +9,14 @@ namespace MVC.Areas.Carrinho.Model
 
         }
 
-        public UpdateQuantidadeInput(string productId, int quantity)
+        public UpdateQuantidadeInput(string id, int quantity)
         {
-            ProductId = productId;
+            Id = id;
             Quantity = quantity;
         }
 
         [Required]
-        public string ProductId { get; set; }
+        public string Id { get; set; }
         [Required]
         public int Quantity { get; set; }
     }

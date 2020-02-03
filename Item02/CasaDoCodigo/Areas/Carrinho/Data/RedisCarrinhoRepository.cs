@@ -84,14 +84,14 @@ namespace CasaDoCodigo.Areas.Carrinho.Data
             if (item == null)
                 throw new ArgumentNullException();
 
-            if (string.IsNullOrWhiteSpace(item.ProductId))
+            if (string.IsNullOrWhiteSpace(item.Id))
                 throw new ArgumentException();
 
             if (item.Quantity < 0)
                 throw new ArgumentOutOfRangeException();
 
             var basket = await GetCarrinhoAsync(customerId);
-            ItemCarrinho itemDB = basket.Itens.Where(i => i.ProdutoId == item.ProductId).SingleOrDefault();
+            ItemCarrinho itemDB = basket.Itens.Where(i => i.ProdutoId == item.Id).SingleOrDefault();
             itemDB.Quantidade = item.Quantity;
             if (item.Quantity == 0)
             {
