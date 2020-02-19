@@ -8,9 +8,13 @@
 
   <ItemGroup>
     <Compile Remove="Areas\**" />
+    <Compile Remove="Migrations\AppIdentity\**" />
     <Content Remove="Areas\**" />
+    <Content Remove="Migrations\AppIdentity\**" />
     <EmbeddedResource Remove="Areas\**" />
+    <EmbeddedResource Remove="Migrations\AppIdentity\**" />
     <None Remove="Areas\**" />
+    <None Remove="Migrations\AppIdentity\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -101,6 +105,7 @@
     <Folder Include="Areas\Cadastro\Models\" />
     <Folder Include="Areas\Carrinho\Data\" />
     <Folder Include="Areas\Carrinho\Models\" />
+    <Folder Include="Areas\Pedido\Data\" />
     <Folder Include="Areas\Pedido\Models\" />
     <Folder Include="wwwroot\images\produtos\" />
   </ItemGroup>

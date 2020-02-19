@@ -37,12 +37,14 @@ namespace CasaDoCodigo
             services.AddDistributedMemoryCache();
             services.AddSession();
 
+            ConfigurarContexto<ApplicationContext>(services, "Default");
             ConfigurarContexto<CatalogoDbContext>(services, "Catalogo");
 
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IHttpHelper, HttpHelper>();
             services.AddTransient<IProdutoRepository, ProdutoRepository>();
             services.AddTransient<IPedidoRepository, PedidoRepository>();
+            services.AddTransient<ICadastroRepository, CadastroRepository>();
 
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
@@ -61,6 +63,7 @@ namespace CasaDoCodigo
         public void Configure(IApplicationBuilder app, IHostingEnvironment env,
             IServiceProvider serviceProvider)
         {
+            MigrateDatabase<ApplicationContext>(app);
             MigrateDatabase<CatalogoDbContext>(app);
 
             _loggerFactory.AddSerilog();
