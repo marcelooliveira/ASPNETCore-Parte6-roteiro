@@ -38,8 +38,14 @@ namespace CasaDoCodigo
             services.AddDistributedMemoryCache();
             services.AddSession();
 
-            ConfigurarContexto<ApplicationContext>(services, "Default");
-            ConfigurarContextoInMemory<CatalogoDbContext>(services, "Catalogo");
+            string connectionString = Configuration.GetConnectionString("Default");
+            services.AddDbContext<ApplicationContext>(options =>
+                options.UseSqlServer(connectionString)
+            );
+
+            services.AddDbContext<CatalogoDbContext>(options =>
+                options.UseInMemoryDatabase(databaseName: "Catalogo")
+            );
 
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IHttpHelper, HttpHelper>();
@@ -50,22 +56,6 @@ namespace CasaDoCodigo
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
             services.AddAuthentication();
-        }
-
-        private void ConfigurarContexto<T>(IServiceCollection services, string nomeConexao) where T : DbContext
-        {
-            string connectionString = Configuration.GetConnectionString(nomeConexao);
-
-            services.AddDbContext<T>(options =>
-                options.UseSqlServer(connectionString)
-            );
-        }
-
-        private void ConfigurarContextoInMemory<T>(IServiceCollection services, string nomeConexao) where T : DbContext
-        {
-            services.AddDbContext<T>(options => 
-                options.UseInMemoryDatabase(databaseName: typeof(T).Name)
-            );
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env,
