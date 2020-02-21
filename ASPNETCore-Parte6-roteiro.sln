@@ -33,6 +33,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Aula00 - Início", "Aula00 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CasaDoCodigo.MVC", "Aula00\CasaDoCodigo\CasaDoCodigo.MVC.csproj", "{CED2B2E6-DE11-4821-90E7-C8A72ECD12CA}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CasaDoCodigo.MVC", "Aula02\CasaDoCodigo\CasaDoCodigo.MVC.csproj", "{30BD5CD0-B272-48C6-9226-A33586BF0FE9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{CED2B2E6-DE11-4821-90E7-C8A72ECD12CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CED2B2E6-DE11-4821-90E7-C8A72ECD12CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CED2B2E6-DE11-4821-90E7-C8A72ECD12CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30BD5CD0-B272-48C6-9226-A33586BF0FE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30BD5CD0-B272-48C6-9226-A33586BF0FE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30BD5CD0-B272-48C6-9226-A33586BF0FE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30BD5CD0-B272-48C6-9226-A33586BF0FE9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -69,6 +75,7 @@ Global
 		{C38EEDC7-3BCE-430A-929C-F86B446E4953} = {48E07BE4-9929-436C-8A7F-A16F8FCDA5BB}
 		{6E3F6E24-ED3D-43E1-8A28-AE08829054BB} = {A89C8F28-2D18-46C5-97BF-5941BD638DAE}
 		{CED2B2E6-DE11-4821-90E7-C8A72ECD12CA} = {6593C8F9-C98D-4D2B-A1E9-5A34386A4738}
+		{30BD5CD0-B272-48C6-9226-A33586BF0FE9} = {0D96F0BB-A246-4E94-8E5C-30CD51FC8491}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {398437CA-EB7F-4F16-ACEE-7A7D1534AD08}
