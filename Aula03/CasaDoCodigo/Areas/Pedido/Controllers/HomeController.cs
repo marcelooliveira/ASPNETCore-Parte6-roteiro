@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using CasaDoCodigo.Areas.Carrinho.Data;
 using CasaDoCodigo.Areas.Identity.Data;
 using CasaDoCodigo.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -13,12 +14,15 @@ namespace CasaDoCodigo.Areas.Pedido.Controllers
     public class HomeController : Controller
     {
         private readonly IPedidoRepository pedidoRepository;
+        private readonly ICarrinhoRepository carrinhoRepository;
         private readonly UserManager<AppIdentityUser> userManager;
 
         public HomeController(IPedidoRepository pedidoRepository,
+            ICarrinhoRepository carrinhoRepository,
             UserManager<AppIdentityUser> userManager)
         {
             this.pedidoRepository = pedidoRepository;
+            this.carrinhoRepository = carrinhoRepository;
             this.userManager = userManager;
         }
 
@@ -44,7 +48,10 @@ namespace CasaDoCodigo.Areas.Pedido.Controllers
 
                 await userManager.UpdateAsync(usuario);
 
-                return View(await pedidoRepository.UpdateCadastroAsync(cadastro));
+                var carrinho = await carrinhoRepository.GetCarrinhoAsync(usuario.Id);
+                var model = await pedidoRepository.FecharPedidoAsync(carrinho, cadastro);
+                await carrinhoRepository.DeleteCarrinhoAsync(usuario.Id);
+                return base.View(model);
             }
             return Redirect("/Cadastro");
         }

@@ -27,7 +27,7 @@ namespace CasaDoCodigo.Areas.Cadastro.Controllers
 
         // GET: /<controller>/
         [Authorize]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index()        
         {
             var pedido = await pedidoRepository.GetPedidoAsync();
 
