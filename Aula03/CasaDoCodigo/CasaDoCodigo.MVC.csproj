@@ -38,7 +38,7 @@
   <ItemGroup>
     <Compile Include="Areas\Cadastro\Controllers\HomeController.cs" />
     <Compile Include="Areas\Carrinho\Controllers\HomeController.cs" />
-    <Compile Include="Areas\Carrinho\Models\CarrinhoCliente.cs" />
+    <Compile Include="Areas\Carrinho\Models\Carrinho.cs" />
     <Compile Include="Areas\Carrinho\Models\ItemCarrinho.cs" />
     <Compile Include="Areas\Carrinho\Models\UpdateQuantidadeInput.cs" />
     <Compile Include="Areas\Carrinho\Models\UpdateQuantidadeOutput.cs" />

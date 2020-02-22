@@ -2,13 +2,19 @@
 {
     public class UpdateQuantidadeOutput
     {
-        public UpdateQuantidadeOutput(ItemCarrinho basketItem, CarrinhoCliente customerBasket)
+        public UpdateQuantidadeOutput(ItemCarrinho itemCarrinho, CarrinhoCliente carrinho)
         {
-            BasketItem = basketItem;
-            CustomerBasket = customerBasket;
+            ItemCarrinho = itemCarrinho;
+            Carrinho = carrinho;
         }
 
-        public ItemCarrinho BasketItem { get; }
-        public CarrinhoCliente CustomerBasket { get; }
+        public ItemCarrinho ItemCarrinho { get; }
+        public CarrinhoCliente Carrinho { get; }
+
+        public string ItemId { get { return ItemCarrinho.Id; } }
+        public int ItemQuantidade { get { return ItemCarrinho.Quantidade; } }
+        public decimal ItemSubtotal { get { return ItemCarrinho.Subtotal; } }
+        public int NumeroItens { get { return Carrinho.Itens.Count; } }
+        public decimal Total { get { return Carrinho.Total; } }
     }
 }

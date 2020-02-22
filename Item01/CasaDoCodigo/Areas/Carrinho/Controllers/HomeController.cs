@@ -32,7 +32,7 @@ namespace CasaDoCodigo.Areas.Carrinho.Controllers
         {
             string clienteId = userManager.GetUserId(this.User);
 
-            CarrinhoCliente carrinhoCliente;
+            MVC.Areas.Carrinho.Model.CarrinhoCliente carrinhoCliente;
             if (!string.IsNullOrWhiteSpace(codigo))
             {
                 var product = await produtoRepository.GetProdutoAsync(codigo);

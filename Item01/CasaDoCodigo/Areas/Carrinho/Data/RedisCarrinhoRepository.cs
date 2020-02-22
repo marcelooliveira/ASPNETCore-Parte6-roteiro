@@ -28,7 +28,7 @@ namespace CasaDoCodigo.Areas.Carrinho.Data
             return await _database.KeyDeleteAsync(id);
         }
 
-        public async Task<CarrinhoCliente> GetCarrinhoAsync(string clienteId)
+        public async Task<MVC.Areas.Carrinho.Model.CarrinhoCliente> GetCarrinhoAsync(string clienteId)
         {
             if (string.IsNullOrWhiteSpace(clienteId))
                 throw new ArgumentException();
@@ -36,7 +36,7 @@ namespace CasaDoCodigo.Areas.Carrinho.Data
             var data = await _database.StringGetAsync(clienteId);
             if (data.IsNullOrEmpty)
             {
-                return await UpdateCarrinhoAsync(new CarrinhoCliente(clienteId));
+                return await UpdateCarrinhoAsync(new MVC.Areas.Carrinho.Model.CarrinhoCliente(clienteId));
             }
             return JsonConvert.DeserializeObject<CarrinhoCliente>(data);
         }
@@ -47,7 +47,7 @@ namespace CasaDoCodigo.Areas.Carrinho.Data
             return server.Keys()?.Select(k => k.ToString());
         }
 
-        public async Task<CarrinhoCliente> UpdateCarrinhoAsync(CarrinhoCliente carrinho)
+        public async Task<MVC.Areas.Carrinho.Model.CarrinhoCliente> UpdateCarrinhoAsync(MVC.Areas.Carrinho.Model.CarrinhoCliente carrinho)
         {
             var criado = await _database.StringSetAsync(carrinho.ClienteId, JsonConvert.SerializeObject(carrinho));
             if (!criado)
@@ -58,7 +58,7 @@ namespace CasaDoCodigo.Areas.Carrinho.Data
             return await GetCarrinhoAsync(carrinho.ClienteId);
         }
 
-        public async Task<CarrinhoCliente> AddItemCarrinhoAsync(string clienteId, ItemCarrinho item)
+        public async Task<MVC.Areas.Carrinho.Model.CarrinhoCliente> AddItemCarrinhoAsync(string clienteId, ItemCarrinho item)
         {
             if (item == null)
                 throw new ArgumentNullException();
@@ -84,20 +84,20 @@ namespace CasaDoCodigo.Areas.Carrinho.Data
             if (item == null)
                 throw new ArgumentNullException();
 
-            if (string.IsNullOrWhiteSpace(item.ProductId))
+            if (string.IsNullOrWhiteSpace(item.Id))
                 throw new ArgumentException();
 
-            if (item.Quantity < 0)
+            if (item.Quantidade < 0)
                 throw new ArgumentOutOfRangeException();
 
             var basket = await GetCarrinhoAsync(customerId);
-            ItemCarrinho itemDB = basket.Itens.Where(i => i.ProdutoId == item.ProductId).SingleOrDefault();
-            itemDB.Quantidade = item.Quantity;
-            if (item.Quantity == 0)
+            ItemCarrinho itemDB = basket.Itens.Where(i => i.ProdutoId == item.Id).SingleOrDefault();
+            itemDB.Quantidade = item.Quantidade;
+            if (item.Quantidade == 0)
             {
                 basket.Itens.Remove(itemDB);
             }
-            CarrinhoCliente customerBasket = await UpdateCarrinhoAsync(basket);
+            MVC.Areas.Carrinho.Model.CarrinhoCliente customerBasket = await UpdateCarrinhoAsync(basket);
             return new UpdateQuantidadeOutput(itemDB, customerBasket);
         }
 

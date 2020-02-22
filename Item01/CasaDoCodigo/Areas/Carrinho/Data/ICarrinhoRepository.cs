@@ -6,10 +6,10 @@ namespace CasaDoCodigo.Areas.Carrinho.Data
 {
     public interface ICarrinhoRepository
     {
-        Task<CarrinhoCliente> GetCarrinhoAsync(string clienteId);
+        Task<MVC.Areas.Carrinho.Model.CarrinhoCliente> GetCarrinhoAsync(string clienteId);
         IEnumerable<string> GetUsuarios();
-        Task<CarrinhoCliente> UpdateCarrinhoAsync(CarrinhoCliente carrinho);
-        Task<CarrinhoCliente> AddItemCarrinhoAsync(string clienteId, ItemCarrinho item);
+        Task<MVC.Areas.Carrinho.Model.CarrinhoCliente> UpdateCarrinhoAsync(MVC.Areas.Carrinho.Model.CarrinhoCliente carrinho);
+        Task<MVC.Areas.Carrinho.Model.CarrinhoCliente> AddItemCarrinhoAsync(string clienteId, ItemCarrinho item);
         Task<UpdateQuantidadeOutput> UpdateItemCarrinhoAsync(string clienteId, UpdateQuantidadeInput item);
         Task<bool> DeleteCarrinhoAsync(string id);
     }

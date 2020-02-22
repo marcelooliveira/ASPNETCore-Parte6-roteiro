@@ -1,21 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace MVC.Areas.Carrinho.Model
+namespace CasaDoCodigo.Models
 {
-    public class CarrinhoCliente
+    public class Carrinho
     {
-        public CarrinhoCliente()
+        public Carrinho()
         {
         }
 
-        public CarrinhoCliente(string clienteId)
+        public Carrinho(string clienteId)
         {
             ClienteId = clienteId;
             Itens = new List<ItemCarrinho>();
         }
 
-        public CarrinhoCliente(CarrinhoCliente carrinhoCliente)
+        public Carrinho(Carrinho carrinhoCliente)
         {
             this.ClienteId = carrinhoCliente.ClienteId;
             this.Itens = carrinhoCliente.Itens;

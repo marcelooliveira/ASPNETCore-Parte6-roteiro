@@ -1,4 +1,5 @@
-﻿using CasaDoCodigo.Areas.Catalogo.Data;
+﻿using CasaDoCodigo.Areas.Carrinho.Data;
+using CasaDoCodigo.Areas.Catalogo.Data;
 using CasaDoCodigo.Areas.Catalogo.Data.Repositories;
 using CasaDoCodigo.Repositories;
 using Microsoft.AspNetCore.Builder;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
 using Serilog;
+using StackExchange.Redis;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -40,15 +42,38 @@ namespace CasaDoCodigo
             ConfigurarContexto<ApplicationContext>(services, "Default");
             ConfigurarContextoSQLite<CatalogoDbContext>(services, "Catalogo");
 
-            services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddTransient<IHttpHelper, HttpHelper>();
-            services.AddTransient<IProdutoRepository, ProdutoRepository>();
-            services.AddTransient<IPedidoRepository, PedidoRepository>();
-            services.AddTransient<ICadastroRepository, CadastroRepository>();
+            ConfigurarRedis(services);
+            ConfigurarDI(services);
 
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
             services.AddAuthentication();
+        }
+
+        private static void ConfigurarDI(IServiceCollection services)
+        {
+            services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient<IHttpHelper, HttpHelper>();
+            services.AddTransient<IProdutoRepository, ProdutoRepository>();
+            services.AddTransient<ICarrinhoRepository, RedisCarrinhoRepository>();
+            services.AddTransient<IPedidoRepository, PedidoRepository>();
+            services.AddTransient<ICadastroRepository, CadastroRepository>();
+        }
+
+        private void ConfigurarRedis(IServiceCollection services)
+        {
+            //By connecting here we are making sure that our service
+            //cannot start until redis is ready. This might slow down startup,
+            //but given that there is a delay on resolving the ip address
+            //and then creating the connection it seems reasonable to move
+            //that cost to startup instead of having the first request pay the
+            //penalty.
+            services.AddSingleton<IConnectionMultiplexer>(sp =>
+            {
+                var configuration = ConfigurationOptions.Parse(Configuration.GetConnectionString("RedisConnectionString"), true);
+                configuration.ResolveDns = true;
+                return ConnectionMultiplexer.Connect(configuration);
+            });
         }
 
         private void ConfigurarContexto<T>(IServiceCollection services, string nomeConexao) where T : DbContext
