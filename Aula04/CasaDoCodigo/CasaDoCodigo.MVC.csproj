@@ -45,11 +45,13 @@
     <Compile Include="Areas\Carrinho\Data\RedisCarrinhoRepository.cs" />
     <Compile Include="Areas\Catalogo\Controllers\HomeController.cs" />
     <Compile Include="Areas\Catalogo\Data\CatalogoDbContext.cs" />
+    <Compile Include="Areas\Catalogo\Data\LivroService.cs" />
     <Compile Include="Areas\Catalogo\Data\Migrations\20190816164225_AreaCatalogo.cs" />
     <Compile Include="Areas\Catalogo\Data\Migrations\20190816164225_AreaCatalogo.Designer.cs" />
     <Compile Include="Areas\Catalogo\Data\Migrations\CatalogoDbContextModelSnapshot.cs" />
     <Compile Include="Areas\Catalogo\Data\Repositories\BaseRepository.cs" />
-    <Compile Include="Areas\Catalogo\Data\Repositories\ProdutoRepository.cs" />
+    <Compile Include="Areas\Catalogo\Data\Repositories\EFProdutoRepository.cs" />
+    <Compile Include="Areas\Catalogo\Data\Repositories\ElasticProdutoRepository.cs" />
     <Compile Include="Areas\Catalogo\Models\BaseModel.cs" />
     <Compile Include="Areas\Catalogo\Models\Categoria.cs" />
     <Compile Include="Areas\Catalogo\Models\Produto.cs" />
@@ -97,6 +99,7 @@
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.2.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.4" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+    <PackageReference Include="NEST" Version="7.3.0" />
     <PackageReference Include="Serilog" Version="2.8.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="2.0.2" />
   </ItemGroup>

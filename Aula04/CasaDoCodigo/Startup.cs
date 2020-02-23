@@ -54,7 +54,9 @@ namespace CasaDoCodigo
         {
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IHttpHelper, HttpHelper>();
-            services.AddTransient<IProdutoRepository, ProdutoRepository>();
+            services.AddTransient<ILivroService, LivroService>();
+            //services.AddTransient<IProdutoRepository, EFProdutoRepository>();
+            services.AddSingleton<IProdutoRepository, ElasticProdutoRepository>();
             services.AddTransient<ICarrinhoRepository, RedisCarrinhoRepository>();
             services.AddTransient<IPedidoRepository, PedidoRepository>();
             services.AddTransient<ICadastroRepository, CadastroRepository>();
@@ -97,8 +99,9 @@ namespace CasaDoCodigo
         public void Configure(IApplicationBuilder app, IHostingEnvironment env,
             IServiceProvider serviceProvider)
         {
+            InitializeProductRepository<IProdutoRepository>(app);
             MigrateDatabase<ApplicationContext>(app);
-            CreateDatabase<CatalogoDbContext>(app);
+            //CreateDatabase<CatalogoDbContext>(app);
 
             _loggerFactory.AddSerilog();
 
@@ -166,6 +169,17 @@ namespace CasaDoCodigo
                 {
                     context.Database.EnsureCreated();
                 }
+            }
+        }
+
+        private static void InitializeProductRepository<T>(IApplicationBuilder app) where T : IProdutoRepository
+        {
+            using (var serviceScope = app.ApplicationServices
+                .GetRequiredService<IServiceScopeFactory>()
+                .CreateScope())
+            {
+                var repository = serviceScope.ServiceProvider.GetService<T>();
+                repository.Initialize();
             }
         }
     }

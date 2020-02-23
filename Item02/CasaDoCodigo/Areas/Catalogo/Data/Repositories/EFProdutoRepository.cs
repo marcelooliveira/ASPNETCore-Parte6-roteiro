@@ -11,7 +11,6 @@ namespace CasaDoCodigo.Areas.Catalogo.Data.Repositories
     public interface IProdutoRepository
     {
         void Initialize();
-
         Task<IList<Produto>> GetProdutosAsync();
         Task<Produto> GetProdutoAsync(string codigo);
         Task<BuscaProdutosViewModel> GetProdutosAsync(string pesquisa);

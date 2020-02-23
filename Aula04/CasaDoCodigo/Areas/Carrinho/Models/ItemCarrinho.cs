@@ -10,18 +10,19 @@ namespace CasaDoCodigo.Models
 
         }
 
-        public ItemCarrinho(string id, string produtoId, string produtoNome, decimal precoUnitario, int quantidade)
+        public ItemCarrinho(int produtoId, string produtoCodigo, string produtoNome, decimal precoUnitario, int quantidade)
         {
-            Id = id;
             ProdutoId = produtoId;
+            ProdutoCodigo = produtoCodigo;
             ProdutoNome = produtoNome;
             PrecoUnitario = precoUnitario;
             Quantidade = quantidade;
         }
 
-        public string Id { get; set; }
         [Required]
-        public string ProdutoId { get; set; }
+        public int ProdutoId { get; set; }
+        [Required]
+        public string ProdutoCodigo { get; set; }
         [Required]
         public string ProdutoNome { get; set; }
         [Required]
@@ -29,7 +30,7 @@ namespace CasaDoCodigo.Models
         [Required]
         public decimal PrecoUnitario { get; set; }
         public decimal Subtotal => Quantidade * PrecoUnitario;
-        public string ImageURL { get { return $"/images/catalog/large_{ProdutoId}.jpg"; } }
+        public string ImageURL { get { return $"/images/catalog/large_{ProdutoCodigo}.jpg"; } }
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             var results = new List<ValidationResult>();

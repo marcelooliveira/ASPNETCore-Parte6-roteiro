@@ -32,15 +32,15 @@ namespace CasaDoCodigo.Areas.Carrinho.Controllers
             string clienteId = userManager.GetUserId(this.User);
 
             Models.Carrinho carrinhoCliente;
-            if (!string.IsNullOrWhiteSpace(codigo))
+            if (int.TryParse(codigo, out int produtoId))
             {
-                var product = await produtoRepository.GetProdutoAsync(codigo);
+                var product = await produtoRepository.GetProdutoAsync(produtoId);
                 if (product == null)
                 {
                     return RedirectToAction("ProdutoNaoEncontrado", "Carrinho", codigo);
                 }
 
-                var item = new ItemCarrinho(product.Codigo, product.Codigo, product.Nome, product.Preco, 1);
+                var item = new ItemCarrinho(product.Id, product.Codigo, product.Nome, product.Preco, 1);
                 carrinhoCliente = await carrinhoRepository.AddItemCarrinhoAsync(clienteId, item);
             }
             else
@@ -55,8 +55,6 @@ namespace CasaDoCodigo.Areas.Carrinho.Controllers
         [Authorize]
         public async Task<ActionResult<UpdateQuantidadeResponse>> UpdateQuantidade([FromBody]UpdateQuantidadeInput input)
         {
-            //return await carrinhoRepository.UpdateQuantidadeAsync(itemPedido);
-
             string clienteId = userManager.GetUserId(this.User);
 
             if (!ModelState.IsValid)

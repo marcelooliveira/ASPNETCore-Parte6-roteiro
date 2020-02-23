@@ -10,16 +10,16 @@ namespace CasaDoCodigo.Areas.Catalogo.Data.Repositories
 {
     public interface IProdutoRepository
     {
-        Task SaveProdutosAsync(List<Livro> livros);
+        void Initialize();
         Task<IList<Produto>> GetProdutosAsync();
-        Task<Produto> GetProdutoAsync(string codigo);
+        Task<Produto> GetProdutoAsync(int id);
         Task<BuscaProdutosViewModel> GetProdutosAsync(string pesquisa);
     }
 
-    public class ProdutoRepository : BaseRepository<Produto>, IProdutoRepository
+    public class EFProdutoRepository : BaseRepository<Produto>, IProdutoRepository
     {
         static List<Produto> listaProdutos;
-        public ProdutoRepository(IConfiguration configuration,
+        public EFProdutoRepository(IConfiguration configuration,
             CatalogoDbContext contexto) : base(configuration, contexto)
         {
         }
@@ -31,10 +31,10 @@ namespace CasaDoCodigo.Areas.Catalogo.Data.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Produto> GetProdutoAsync(string codigo)
+        public async Task<Produto> GetProdutoAsync(int id)
         {
             return await dbSet
-                .Where(p => p.Codigo == codigo)
+                .Where(p => p.Id == id)
                 .Include(prod => prod.Categoria)
                 .SingleOrDefaultAsync();
         }
@@ -103,6 +103,11 @@ namespace CasaDoCodigo.Areas.Catalogo.Data.Repositories
                 }
             }
             await contexto.SaveChangesAsync();
+        }
+
+        public void Initialize()
+        {
+            throw new System.NotImplementedException();
         }
     }
 

@@ -73,17 +73,17 @@ namespace CasaDoCodigo.Areas.Carrinho.Data
             if (item == null)
                 throw new ArgumentNullException();
 
-            if (string.IsNullOrWhiteSpace(item.ProdutoId))
-                throw new ArgumentException();
+            if (item.ProdutoId <= 0)
+                throw new ArgumentOutOfRangeException(nameof(item.ProdutoId));
 
             if (item.Quantidade <= 0)
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(item.Quantidade));
 
             var carrinho = await GetCarrinhoAsync(clienteId);
             ItemCarrinho itemDB = carrinho.Itens.Where(i => i.ProdutoId == item.ProdutoId).SingleOrDefault();
             if (itemDB == null)
             {
-                itemDB = new ItemCarrinho(item.Id, item.ProdutoId, item.ProdutoNome, item.PrecoUnitario, item.Quantidade);
+                itemDB = new ItemCarrinho(item.ProdutoId, item.ProdutoCodigo, item.ProdutoNome, item.PrecoUnitario, item.Quantidade);
                 carrinho.Itens.Add(item);
             }
             return await UpdateCarrinhoAsync(carrinho);
@@ -94,11 +94,8 @@ namespace CasaDoCodigo.Areas.Carrinho.Data
             if (item == null)
                 throw new ArgumentNullException();
 
-            if (string.IsNullOrWhiteSpace(item.Id))
-                throw new ArgumentException();
-
-            if (item.Quantidade < 0)
-                throw new ArgumentOutOfRangeException();
+            if (item.Id <= 0)
+                throw new ArgumentOutOfRangeException(nameof(item.Id));
 
             var basket = await GetCarrinhoAsync(customerId);
             ItemCarrinho itemDB = basket.Itens.Where(i => i.ProdutoId == item.Id).SingleOrDefault();

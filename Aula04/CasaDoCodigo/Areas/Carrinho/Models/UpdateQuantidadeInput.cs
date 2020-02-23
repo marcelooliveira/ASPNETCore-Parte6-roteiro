@@ -9,14 +9,14 @@ namespace CasaDoCodigo.Models
 
         }
 
-        public UpdateQuantidadeInput(string id, int quantidade)
+        public UpdateQuantidadeInput(int id, int quantidade)
         {
             Id = id;
             Quantidade = quantidade;
         }
 
         [Required]
-        public string Id { get; set; }
+        public int Id { get; set; }
         [Required]
         public int Quantidade { get; set; }
     }

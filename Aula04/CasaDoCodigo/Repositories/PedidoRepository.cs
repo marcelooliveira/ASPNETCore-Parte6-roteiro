@@ -15,8 +15,8 @@ namespace CasaDoCodigo.Repositories
     public interface IPedidoRepository
     {
         Task<Pedido> GetPedidoAsync();
-        Task<ItemPedido> AddItemAsync(string codigo);
-        Task<ItemPedido> AddItemAsync(string codigo, int quantidade);
+        Task<ItemPedido> AddItemAsync(int produtoId);
+        Task<ItemPedido> AddItemAsync(int produtoId, int quantidade);
         Task<UpdateQuantidadeResponse> UpdateQuantidadeAsync(ItemPedido itemPedido);
         Task<Pedido> FecharPedidoAsync(Carrinho carrinho, Cadastro cadastro);
     }
@@ -44,14 +44,14 @@ namespace CasaDoCodigo.Repositories
             this.produtoRepository = produtoRepository;
         }
 
-        public async Task<ItemPedido> AddItemAsync(string codigo)
+        public async Task<ItemPedido> AddItemAsync(int produtoId)
         {
-            return await AddItemAsync(codigo, 1);
+            return await AddItemAsync(produtoId, 1);
         }
 
-        public async Task<ItemPedido> AddItemAsync(string codigo, int quantidade)
+        public async Task<ItemPedido> AddItemAsync(int produtoId, int quantidade)
         {
-            var produto = await produtoRepository.GetProdutoAsync(codigo);
+            var produto = await produtoRepository.GetProdutoAsync(produtoId);
 
             if (produto == null)
             {
@@ -62,7 +62,7 @@ namespace CasaDoCodigo.Repositories
 
             var itemPedido = await
                                 contexto.Set<ItemPedido>()
-                                .Where(i => i.ProdutoCodigo == codigo
+                                .Where(i => i.Id == produtoId
                                         && i.Pedido.Id == pedido.Id)
                                 .SingleOrDefaultAsync();
 
@@ -138,7 +138,7 @@ namespace CasaDoCodigo.Repositories
             var pedido = await GetPedidoAsync();
             foreach (var item in carrinho.Itens)
             {
-                var itemPedido = await AddItemAsync(item.Id, item.Quantidade);
+                var itemPedido = await AddItemAsync(item.ProdutoId, item.Quantidade);
                 await UpdateQuantidadeAsync(itemPedido);
             }
 
