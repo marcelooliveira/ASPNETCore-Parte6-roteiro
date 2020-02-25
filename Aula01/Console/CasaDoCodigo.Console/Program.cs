@@ -14,20 +14,16 @@ namespace CasaDoCodigo.Console
             {
                 contexto.Database.Migrate();
 
-                System.Console.WriteLine("Categorias:");
-                System.Console.WriteLine("===========");
-                foreach (var categoria in contexto.Set<Categoria>())
+                if (!contexto.Set<Categoria>()
+                    .Where(c => c.Nome == "Arquitetura de Software").Any())
                 {
-                    System.Console.WriteLine("ID: {0}, Nome: {1}", categoria.Id, categoria.Nome);
+                    var novaCategoria = new Categoria("Arquitetura de Software");
+                    contexto.Set<Produto>().Add(new Produto("XXX", "ASP.NET Core com Múltiplas Bases de Dados", 100, novaCategoria));
+                    contexto.SaveChanges();
                 }
 
-                System.Console.WriteLine();
-                System.Console.WriteLine("Produtos:");
-                System.Console.WriteLine("=========");
-                foreach (var produto in contexto.Set<Produto>())
-                {
-                    System.Console.WriteLine("ID: {0}, Codigo: {1}, CategoriaId: {2}, Nome: {3}", produto.Id, produto.Codigo, produto.CategoriaId, produto.Nome);
-                }
+                ListarCategorias(contexto);
+                ListarProdutos(contexto);
 
                 string pesquisa = string.Empty;
                 do
@@ -50,10 +46,31 @@ namespace CasaDoCodigo.Console
                     {
                         System.Console.WriteLine("ID: {0}, Codigo: {1}, CategoriaId: {2}, Nome: {3}", produto.Id, produto.Codigo, produto.CategoriaId, produto.Nome);
                     }
-                } while (!string.IsNullOrEmpty(pesquisa));                
+                } while (!string.IsNullOrEmpty(pesquisa));
 
                 System.Console.WriteLine("Tecle ENTER para sair...");
                 System.Console.ReadLine();
+            }
+        }
+
+        private static void ListarProdutos(CatalogoDbContext contexto)
+        {
+            System.Console.WriteLine();
+            System.Console.WriteLine("Produtos:");
+            System.Console.WriteLine("=========");
+            foreach (var produto in contexto.Set<Produto>())
+            {
+                System.Console.WriteLine("ID: {0}, Codigo: {1}, CategoriaId: {2}, Nome: {3}", produto.Id, produto.Codigo, produto.CategoriaId, produto.Nome);
+            }
+        }
+
+        private static void ListarCategorias(CatalogoDbContext contexto)
+        {
+            System.Console.WriteLine("Categorias:");
+            System.Console.WriteLine("===========");
+            foreach (var categoria in contexto.Set<Categoria>())
+            {
+                System.Console.WriteLine("ID: {0}, Nome: {1}", categoria.Id, categoria.Nome);
             }
         }
     }

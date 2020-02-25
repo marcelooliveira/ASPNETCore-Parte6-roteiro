@@ -1,52 +1,13 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
-using CasaDoCodigo.Console.Models;
-using JetBrains.Annotations;
-using Microsoft.AspNetCore.Hosting;
+﻿using CasaDoCodigo.Areas.Catalogo.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
-namespace EFCoreSQLite
+namespace CasaDoCodigo.Areas.Catalogo.Data
 {
-    //public class BlogContext : DbContext
-    //{
-    //    public BlogContext()
-    //    {
-    //        Database.EnsureCreated();
-    //    }
-
-    //    public DbSet<Blog> Blogs { get; set; }
-    //    public DbSet<Post> Posts { get; set; }
-
-    //    protected override void OnConfiguring(DbContextOptionsBuilder options)
-    //          => options.UseSqlite($"Data Source=blog.db");
-    //}
-
-    //public class Blog
-    //{
-    //    public int Id { get; set; }
-    //    public string Url { get; set; }
-
-    //    public virtual List<Post> Posts { get; set; } = new List<Post>();
-    //}
-
-    //public class Post
-    //{
-    //    public int Id { get; set; }
-    //    public string Title { get; set; }
-    //    public string Content { get; set; }
-
-    //    public int BlogId { get; set; }
-    //    public virtual Blog Blog { get; set; }
-    //}
-
-
-
-
-
     public class CatalogoDbContext : DbContext
     {
         public CatalogoDbContext(DbContextOptions<CatalogoDbContext> options)
@@ -57,6 +18,9 @@ namespace EFCoreSQLite
         public CatalogoDbContext()
         {
         }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
+              => options.UseSqlite($"Data Source=catalogo.db");
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -91,9 +55,6 @@ namespace EFCoreSQLite
             builder.Entity<Produto>();
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-              => options.UseSqlite($"Data Source=catalogo.db");
-
         private IEnumerable<Produto> GetProdutos()
         {
             var livros = GetLivros();
@@ -103,23 +64,20 @@ namespace EFCoreSQLite
                     .Distinct()
                     .Select((nomeCategoria, i) =>
                     {
-                        var c = new Categoria(nomeCategoria)
-                        {
-                            Id = i + 1
-                        };
-                        return c;
-                    });
+                        var c = new Categoria(nomeCategoria);
+                        c.Id = i + 1;
+                        return c; });
 
             var produtos =
                 (from livro in livros
-                 join categoria in categorias
-                     on livro.Categoria equals categoria.Nome
-                 select new Produto(livro.Codigo, livro.Nome, livro.Preco, categoria))
+                join categoria in categorias
+                    on livro.Categoria equals categoria.Nome
+                select new Produto(livro.Codigo, livro.Nome, livro.Preco, categoria))
                 .Select((p, i) =>
-                {
-                    p.Id = i + 1;
-                    return p;
-                })
+                    {
+                        p.Id = i + 1;
+                        return p;
+                    })
                 .ToList();
 
             return produtos;

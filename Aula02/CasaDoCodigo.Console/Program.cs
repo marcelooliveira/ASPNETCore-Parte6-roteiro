@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CasaDoCodigo.Areas.Catalogo.Data;
+using CasaDoCodigo.Areas.Catalogo.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,47 +11,68 @@ namespace EFCoreSQLite
     {
         static void Main()
         {
-            using (var context = new CatalogoDbContext())
+            using (var contexto = new CatalogoDbContext())
             {
-                context.Database.EnsureCreated();
+                contexto.Database.EnsureCreated();
 
-                //// Create
-                //Console.WriteLine("Inserindo um novo blog");
-                //var blog = new Blog { Url = "https://www.caelum.com.br/artigos" };
-                //context.Add(blog);
-                //context.SaveChanges();
-                //Console.WriteLine("Tecle enter para prosseguir...");
-                //Console.ReadLine();
+                if (!contexto.Set<Categoria>()
+                    .Where(c => c.Nome == "Arquitetura de Software").Any())
+                {
+                    var novaCategoria = new Categoria("Arquitetura de Software");
+                    contexto.Set<Produto>().Add(new Produto("XXX", "ASP.NET Core com Múltiplas Bases de Dados", 100, novaCategoria));
+                    contexto.SaveChanges();
+                }
 
-                //// Read
-                //Console.WriteLine("Consultando um blog");
-                //var blogs = context.Blogs
-                //    .OrderBy(b => b.Id)
-                //    .First();
-                //Console.WriteLine("Tecle enter para prosseguir...");
-                //Console.ReadLine();
+                ListarCategorias(contexto);
+                ListarProdutos(contexto);
 
-                //// Update
-                //Console.WriteLine("Atualizando URL do blog e adicionando um novo post");
-                //blog.Url = "https://www.alura.com.br/artigos";
-                //Post post = new Post
-                //{
-                //    Title = "Microsserviços com .NET Core: Comunicação Entre Serviços",
-                //    Content = "Comunicação assíncrona e desacoplada em serviços .NET Core"
-                //};
-                //blog.Posts.Add(post);
-                //context.SaveChanges();
-                //Console.WriteLine("Tecle enter para prosseguir...");
-                //Console.ReadLine();
+                string pesquisa = string.Empty;
+                do
+                {
+                    System.Console.WriteLine();
+                    System.Console.WriteLine("Digite um texto de busca e tecle ENTER...");
+                    pesquisa = System.Console.ReadLine();
 
-                //// Delete
-                //Console.WriteLine("Excluindo o blog");
-                //context.Remove(blog);
-                //context.SaveChanges();
-                //Console.WriteLine("Tecle enter para sair...");
-                //Console.ReadLine();
+                    var resultado =
+                        contexto.Set<Produto>()
+                            .Where(q =>
+                            q.Nome.ToLower().Contains(pesquisa)
+                            || q.Categoria.Nome.ToLower().Contains(pesquisa))
+                            .ToList();
+
+                    System.Console.WriteLine();
+                    System.Console.WriteLine("Resultado:");
+                    System.Console.WriteLine("==========");
+                    foreach (var produto in resultado)
+                    {
+                        System.Console.WriteLine("ID: {0}, Codigo: {1}, CategoriaId: {2}, Nome: {3}", produto.Id, produto.Codigo, produto.CategoriaId, produto.Nome);
+                    }
+                } while (!string.IsNullOrEmpty(pesquisa));
+
+                System.Console.WriteLine("Tecle ENTER para sair...");
+                System.Console.ReadLine();
             }
+        }
 
+        private static void ListarProdutos(CatalogoDbContext contexto)
+        {
+            System.Console.WriteLine();
+            System.Console.WriteLine("Produtos:");
+            System.Console.WriteLine("=========");
+            foreach (var produto in contexto.Set<Produto>())
+            {
+                System.Console.WriteLine("ID: {0}, Codigo: {1}, CategoriaId: {2}, Nome: {3}", produto.Id, produto.Codigo, produto.CategoriaId, produto.Nome);
+            }
+        }
+
+        private static void ListarCategorias(CatalogoDbContext contexto)
+        {
+            System.Console.WriteLine("Categorias:");
+            System.Console.WriteLine("===========");
+            foreach (var categoria in contexto.Set<Categoria>())
+            {
+                System.Console.WriteLine("ID: {0}, Nome: {1}", categoria.Id, categoria.Nome);
+            }
         }
     }
 }
