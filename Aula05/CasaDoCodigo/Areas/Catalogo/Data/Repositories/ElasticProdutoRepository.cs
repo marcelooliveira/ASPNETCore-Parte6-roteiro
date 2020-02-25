@@ -51,34 +51,44 @@ namespace CasaDoCodigo.Areas.Catalogo.Data.Repositories
                 client.Indices.Delete(ProdutoIndexName);
             }
 
-            client.Indices.Create(ProdutoIndexName
-                , descriptor => descriptor
-                .Map<Produto>(m => m
-                    .AutoMap()
-                    .Properties(ps => ps
-                        .Text(s => s
-                            .Name(n => n.Codigo)
-                            .Analyzer("substring_analyzer")
+            client.Indices.Create(ProdutoIndexName, s =>
+            s.Settings(s2 => s2
+                .Analysis(a => a
+                    .TokenFilters(t => t
+                        .Stop("stop", st => st
+                            .StopWords("_portuguese_")
+                            .RemoveTrailing()
+                        )
+                        .Synonym("sinonimos", st => st
+                            .Synonyms(
+                                "csharp, c#"
+                            )
+                        )
+                        .Snowball("snowball", st => st
+                            .Language(SnowballLanguage.Portuguese)
+                        )
+                    )
+                    .Analyzers(an => an
+                        .Custom("meu_analisador", ca => ca
+                            .Tokenizer("standard")
+                            .Filters(
+                                "lowercase",
+                                "stop",
+                                "snowball",
+                                "sinonimos"
+                            )
                         )
                     )
                 )
-                .Settings(s => s
-                    .Analysis(a => a
-                        .Analyzers(analyzer => analyzer
-                            .Custom("substring_analyzer", analyzerDescriptor => analyzerDescriptor
-                                .Tokenizer("standard")
-                                .Filters("lowercase", "substring")
-                            )
-                        )
-                        .TokenFilters(tf => tf
-                            .NGram("substring", filterDescriptor => filterDescriptor
-                                .MinGram(2)
-                                .MaxGram(15)
-                            )
-                        )
+            )
+            .Map<Produto>(m => m
+                .Properties(p => p
+                    .Text(t => t
+                        .Name(n => n.Nome)
+                        .Analyzer("meu_analisador")
                     )
                 )
-            );
+            ));
             return client;
         }
 
